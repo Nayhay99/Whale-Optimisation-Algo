@@ -5,9 +5,11 @@ import numpy as np
 from src.animate_scatter import AnimateScatter
 from src.whale_optimization import WhaleOptimization
 
-# different forms of calling the algo
+# method to parse command line arguments with argparse module
 def parse_cl_args():
     parser = argparse.ArgumentParser()
+    
+    #adding various agrguments with add_argument()
     parser.add_argument("-nsols", type=int, default=50, dest='nsols', help='number of solutions per generation, default: 50')
     parser.add_argument("-ngens", type=int, default=30, dest='ngens', help='number of generations, default: 20')
     parser.add_argument("-a", type=float, default=2.0, dest='a', help='woa algorithm specific parameter, controls search spread default: 2.0')
@@ -18,10 +20,10 @@ def parse_cl_args():
     parser.add_argument("-t", type=float, default=0.1, dest='t', help='animate sleep time, lower values increase animation speed, default: 0.1')
     parser.add_argument("-max", default=False, dest='max', action='store_true', help='enable for maximization, default: False (minimization)')
 
-    args = parser.parse_args()
-    return args
+    args = parser.parse_args()  #parsing arguments with parse args
+    return args #returning the parsed arguments
 
-#optimization functions from https://en.wikipedia.org/wiki/Test_functions_for_optimization 
+# Defining different benchmark fucntions to test our optimization functions
 
 # def schaffer(X, Y):
 #     """constraints=100, minimum f(0,0)=0"""
@@ -88,26 +90,27 @@ def himmelblau(X, Y):
 #     return A + B + C
 
 def main():
-    args = parse_cl_args()
-#initialising the variables
+    args = parse_cl_args() #storing the parsed arguments
+    
+    #initialising the variables
     nsols = args.nsols
     ngens = args.ngens
 
     # funcs = {'schaffer':schaffer, 'deckker': deckkers_Aarts, 'himmel': himmelblau, 'eggholder':eggholder, 'booth':booth, 'matyas':matyas, 'cross':cross_in_tray, 'levi':levi}
     # func_constraints = {'schaffer':100.0, 'deckker': 20.0,'himmel':5.0, 'eggholder':512.0, 'booth':10.0, 'matyas':10.0, 'cross':10.0, 'levi':10.0}
     
-    #calling respective funccs
+    #defining the benchmark functions
     funcs = { 'deckker': deckkers_Aarts, 'himmel': himmelblau, 'booth':booth, 'matyas':matyas, }
     func_constraints = {'deckker': 20.0,'himmel':5.0, 'booth':10.0, 'matyas':10.0, }
-
+    
+    #check if the function of the argument exists in the list of benchmark functions
     if args.func in funcs:
         func = funcs[args.func]
     else:
         print('Missing supplied function '+args.func+' definition. Ensure function defintion exists or use command line options.')
         return
 
-        #setting the constraint
-
+    #setting the constraint
     if args.c is None:
         if args.func in func_constraints:
             args.c = func_constraints[args.func]
@@ -125,17 +128,20 @@ def main():
     a_step = a/ngens
 
     maximize = args.max
-#outpput at each  step  of algo
-    opt_alg = WhaleOptimization(opt_func, constraints, nsols, b, a, a_step, maximize)
+    
+    #outpput at each  step  of algo
+    opt_alg = WhaleOptimization(opt_func, constraints, nsols, b, a, a_step, maximize) #running WOA on the input fucntion
     solutions = opt_alg.get_solutions()
     colors = [[1.0, 1.0, 1.0] for _ in range(nsols)]
-
+    
+    #creating animated scatter plots
     a_scatter = AnimateScatter(constraints[0][0], 
                                constraints[0][1], 
                                constraints[1][0], 
                                constraints[1][1], 
-                               solutions, colors, opt_func, args.r, args.t)
-
+                               solutions, colors, opt_func, args.r, args.t) 
+    
+    ## updating animated scatter plots for every ngens
     for _ in range(ngens):
         opt_alg.optimize()
         solutions = opt_alg.get_solutions()
