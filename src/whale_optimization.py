@@ -7,14 +7,14 @@ class WhaleOptimization():
     https://doi.org/10.1016/j.advengsoft.2016.01.008
     """
     def __init__(self, opt_func, constraints, nsols, b, a, a_step, maximize=False):
-        self._opt_func = opt_func
-        self._constraints = constraints
-        self._sols = self._init_solutions(nsols) 
-        self._b = b
+        self._opt_func = opt_func  #which benchmark function is used 
+        self._constraints = constraints  #constraints based on benchmark functions
+        self._sols = self._init_solutions(nsols) # no.of whales or initial search agents
+        self._b = b #constant for defining the shape of the logarithmic spiral
         self._a = a
         self._a_step = a_step
-        self._maximize = maximize
-        self._best_solutions = []
+        self._maximize = maximize #maximization or minimization (default)
+        self._best_solutions = [] # target 
         
     def get_solutions(self):
         """return solutions"""
@@ -85,31 +85,56 @@ class WhaleOptimization():
         print('([fitness], [solution])')
         print(sorted(self._best_solutions, key=lambda x:x[0], reverse=self._maximize)[0])
 
+#updating as per formula of vector A and C
     def _compute_A(self):
+    	#Where components of a vector are linearly decreased from 2 to 0 over the course of iterations and r1 & r2  (r) are random vectors in [0,1].
         r = np.random.uniform(0.0, 1.0, size=2)
         return (2.0*np.multiply(self._a, r))-self._a
 
     def _compute_C(self):
+    	#Where components of a vector are linearly decreased from 2 to 0 over the course of iterations and r1 & r2  (r) are random vectors in [0,1].
         return 2.0*np.random.uniform(0.0, 1.0, size=2)
-                                                                 
+        
+    #upddating the position of all whales for next iteration   
+    # X(t+1) = Xp(t -  A.D)                                                    
     def _encircle(self, sol, best_sol, A):
         D = self._encircle_D(sol, best_sol)
         return best_sol - np.multiply(A, D)
-                                                                 
+
+        # WOA assumes current best soltion (best_sol) is the target prey (Xp)
+        # X(t) is position vector of whale or the other solution ((sol))                         
+    	#D =|C.Xp(t) - X(t)|
     def _encircle_D(self, sol, best_sol):
         C = self._compute_C()
         D = np.linalg.norm(np.multiply(C, best_sol)  - sol)
         return D
 
-    def _search(self, sol, rand_sol, A):
-        D = self._search_D(sol, rand_sol)
-        return rand_sol - np.multiply(A, D)
+   
+#EXPLOITATION PHASE 
+#L=t
+#spiral equation 
 
-    def _search_D(self, sol, rand_sol):
-        C = self._compute_C()
-        return np.linalg.norm(np.multiply(C, rand_sol) - sol)    
-
+#X* is the best solution
+     #D' = |X*(t) - X(t)|
+        #indicates the distance of the i-th whale the prey (best solution obtained so far), 
+        #b is a constant for defining the shape of the logarithmic spiral, and t is a random number in [-1,1].
     def _attack(self, sol, best_sol):
         D = np.linalg.norm(best_sol - sol)
         L = np.random.uniform(-1.0, 1.0, size=2)
         return np.multiply(np.multiply(D,np.exp(self._b*L)), np.cos(2.0*np.pi*L))+best_sol
+		# X(t+1)=D'*e^(b*t) cos(2pi*t) + X*(t)
+
+ #EXPLORATION PHASE
+#Xrand is a random whale or random search agent
+    def _search(self, sol, rand_sol, A):
+        D = self._search_D(sol, rand_sol)
+            # X(t+1) = Xrand(t)-  A.D                                                    
+
+        return rand_sol - np.multiply(A, D)
+
+    def _search_D(self, sol, rand_sol):
+    	#D=|C*Xrand - X|
+    	#X = current solution
+        C = self._compute_C()
+        return np.linalg.norm(np.multiply(C, rand_sol) - sol)    
+
