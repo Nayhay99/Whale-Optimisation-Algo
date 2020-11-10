@@ -25,20 +25,6 @@ def parse_cl_args():
 
 # Defining different benchmark fucntions to test our optimization functions
 
-# def schaffer(X, Y):
-#     """constraints=100, minimum f(0,0)=0"""
-#     numer = np.square(np.sin(X**2 - Y**2)) - 0.5
-#     denom = np.square(1.0 + (0.001*(X**2 + Y**2)))
-
-#     return 0.5 + (numer*(1.0/denom))
-
-# def eggholder(X, Y):
-#     """constraints=512, minimum f(512, 414.2319)=-959.6407"""
-#     y = Y+47.0
-#     a = (-1.0)*(y)*np.sin(np.sqrt(np.absolute((X/2.0) + y)))
-#     b = (-1.0)*X*np.sin(np.sqrt(np.absolute(X-y)))
-#     return a+b
-
 def deckkers_Aarts (X, Y):
     '''
     contraint = 20
@@ -47,8 +33,6 @@ def deckkers_Aarts (X, Y):
     x=X**2
     y=Y**2
     z= (x+y)**2
-
-
     return (10**5)*x +y -z + (10**(-5))*(z**2)
 
 def booth(X, Y):
@@ -59,18 +43,6 @@ def matyas(X, Y):
     """constraints=10, minimum f(0, 0)=0"""
     return (0.26*(X**2+Y**2))-(0.48*X*Y)
 
-# def cross_in_tray(X, Y):
-#     """constraints=10,
-#     minimum f(1.34941, -1.34941)=-2.06261
-#     minimum f(1.34941, 1.34941)=-2.06261
-#     minimum f(-1.34941, 1.34941)=-2.06261
-#     minimum f(-1.34941, -1.34941)=-2.06261
-#     """
-#     B = np.exp(np.absolute(100.0-(np.sqrt(X**2+Y**2)/np.pi)))
-#     A = np.absolute(np.sin(X)*np.sin(Y)*B)+1
-#     return -0.0001*(A**0.1)
-
-
 def himmelblau(X, Y):
     """constraints=5,
     minimum f(3,2) = 0.0
@@ -80,14 +52,6 @@ def himmelblau(X, Y):
     """
     return ((X**2+Y-11)**2)+(X+Y**2-7)**2
 
-# def levi(X, Y):
-#     """constraints=10,
-#     minimum f(1,1)=0.0
-#     """
-#     A = np.sin(3.0*np.pi*X)**2
-#     B = ((X-1)**2)*(1+np.sin(3.0*np.pi*Y)**2)
-#     C = ((Y-1)**2)*(1+np.sin(2.0*np.pi*Y)**2)
-#     return A + B + C
 
 def main():
     args = parse_cl_args() #storing the parsed arguments
@@ -96,8 +60,6 @@ def main():
     nsols = args.nsols
     ngens = args.ngens
 
-    # funcs = {'schaffer':schaffer, 'deckker': deckkers_Aarts, 'himmel': himmelblau, 'eggholder':eggholder, 'booth':booth, 'matyas':matyas, 'cross':cross_in_tray, 'levi':levi}
-    # func_constraints = {'schaffer':100.0, 'deckker': 20.0,'himmel':5.0, 'eggholder':512.0, 'booth':10.0, 'matyas':10.0, 'cross':10.0, 'levi':10.0}
     
     #defining the benchmark functions
     funcs = { 'deckker': deckkers_Aarts, 'himmel': himmelblau, 'booth':booth, 'matyas':matyas }
