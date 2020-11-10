@@ -100,7 +100,7 @@ def main():
     # func_constraints = {'schaffer':100.0, 'deckker': 20.0,'himmel':5.0, 'eggholder':512.0, 'booth':10.0, 'matyas':10.0, 'cross':10.0, 'levi':10.0}
     
     #defining the benchmark functions
-    funcs = { 'deckker': deckkers_Aarts, 'himmel': himmelblau, 'booth':booth, 'matyas':matyas, }
+    funcs = { 'deckker': deckkers_Aarts, 'himmel': himmelblau, 'booth':booth, 'matyas':matyas }
     func_constraints = {'deckker': 20.0,'himmel':5.0, 'booth':10.0, 'matyas':10.0, }
     
     #check if the function of the argument exists in the list of benchmark functions
@@ -122,6 +122,7 @@ def main():
     constraints = [[-C, C], [-C, C]]
 
     opt_func = func
+    title = func.__name__
 
     b = args.b
     a = args.a
@@ -139,7 +140,7 @@ def main():
                                constraints[0][1], 
                                constraints[1][0], 
                                constraints[1][1], 
-                               solutions, colors, opt_func, args.r, args.t) 
+                               solutions, colors, opt_func, args.r, args.t,title) 
     
     ## updating animated scatter plots for every ngens
     for _ in range(ngens):

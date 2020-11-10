@@ -1,11 +1,8 @@
 import numpy as np
 
 class WhaleOptimization():
-    """class implements the whale optimization algorithm as found at
-    http://www.alimirjalili.com/WOA.html
-    and
-    https://doi.org/10.1016/j.advengsoft.2016.01.008
-    """
+    ## class implements the whale optimization algorithm as found at
+
     def __init__(self, opt_func, constraints, nsols, b, a, a_step, maximize=False):
         self._opt_func = opt_func
         self._constraints = constraints
@@ -81,7 +78,7 @@ class WhaleOptimization():
         for s in self._best_solutions:
             print(s)
         print('\n')
-        print('best solution')
+        print('best solution :')
         print('([fitness], [solution])')
         print(sorted(self._best_solutions, key=lambda x:x[0], reverse=self._maximize)[0])
 

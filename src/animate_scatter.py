@@ -4,21 +4,19 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 class AnimateScatter():
-    """creates an animated scatter plot which can be updated"""
-    def __init__(self, xmin, xmax, ymin, ymax, pos, col, func, resolution, t):
-        plt.ion()
-
+    ## creates an animated scatter plot which can be updated
+    def __init__(self, xmin, xmax, ymin, ymax, pos, col, func, resolution, t,title):
+        plt.ion() # to turn on interactive mode
         self.xmin = xmin 
         self.xmax = xmax        
         self.ymin = ymin        
         self.ymax = ymax
-
+        self.title = title
         self.fig, self.ax = plt.subplots()
 
         self.c = col
         self.func = func
         self.t = t
-    
         #add resolution to eliminate whitespace
         self.x = np.arange(self.xmin, self.xmax+resolution, resolution)
         self.y = np.arange(self.ymin, self.ymax+resolution, resolution)
@@ -27,7 +25,7 @@ class AnimateScatter():
         self.update(pos)
 
     def draw_background(self):
-        """draw filled contour of function meshgrid"""
+        ## draw filled contour of function meshgrid
         self.ax.contourf( self.x, self.y, self.z)
 
     def update_canvas(self):
@@ -37,6 +35,7 @@ class AnimateScatter():
     def update(self, pos):
         self.ax.clear()
         self.ax.axis([self.xmin, self.xmax, self.ymin, self.ymax])
+        self.ax.title.set_text(self.title+" Function ")
         self.draw_background()
         self.ax.scatter(pos[:,0], pos[:,1], s=30, c=self.c)
         self.update_canvas()
