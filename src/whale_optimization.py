@@ -25,28 +25,28 @@ class WhaleOptimization():
         new_sols = [best_sol]
                                                                  
         for s in ranked_sol[1:]:
-        	"""
-			Note that humpback whales swim around the prey within a shrinking circle and along a 
-			spiral-shaped path simultaneously. To model this simultaneous behaviour, we assume that
-			 there is a probability of 50% to choose between either the shrinking encircling mechanism
-			  or the spiral model to update the position of whales during optimization.
-        	"""
+        	
+			#Note that humpback whales swim around the prey within a shrinking circle and along a 
+			#spiral-shaped path simultaneously. To model this simultaneous behaviour, we assume that
+			 #there is a probability of 50% to choose between either the shrinking encircling mechanism
+			  #or the spiral model to update the position of whales during optimization.
+        	
         	#checking the probability 
-                if np.random.uniform(0.0, 1.0) > 0.5:                                      
-                    A = self._compute_A()        #getting ready to encircle                                             
-                    norm_A = np.linalg.norm(A)   
+            if np.random.uniform(0.0, 1.0) > 0.5:                                      
+                A = self._compute_A()        #getting ready to encircle                                             
+                norm_A = np.linalg.norm(A)   
 
-                    if norm_A < 1.0:  # the best solution is selected for updating the position of the search agents                                                       
-                        new_s = self._encircle(s, best_sol, A)      #encircling                          
-                    
-                    else:                                                                     
-                        ###select random sol      
-                        #A random search agent is chosen when |A vector| >1                                            
-                        random_sol = self._sols[np.random.randint(self._sols.shape[0])]       
-                        new_s = self._search(s, random_sol, A)                                
-                else:                                                                         
-                    new_s = self._attack(s, best_sol)                                         
-                new_sols.append(self._constrain_solution(new_s))
+                if norm_A < 1.0:  # the best solution is selected for updating the position of the search agents                                                       
+                    new_s = self._encircle(s, best_sol, A)      #encircling                          
+                
+                else:                                                                     
+                    ###select random sol      
+                    #A random search agent is chosen when |A vector| >1                                            
+                    random_sol = self._sols[np.random.randint(self._sols.shape[0])]       
+                    new_s = self._search(s, random_sol, A)                                
+            else:                                                                         
+                new_s = self._attack(s, best_sol)                                         
+            new_sols.append(self._constrain_solution(new_s))
 
         self._sols = np.stack(new_sols)
         self._a -= self._a_step
